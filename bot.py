@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Telegram Bot токен
-TOKEN = os.getenv("TELEGRAM_TOKEN")  # Укажите токен в переменной окружения TELEGRAM_TOKEN
+TOKEN = "8137862914:AAFhFzvF1m1ThXjz0N7R_5BhglJuGsdnhFI"
 bot = Bot(token=TOKEN)
 
 # Инициализация Dispatcher
@@ -39,6 +39,6 @@ def home():
 # Запуск приложения
 if __name__ == "__main__":
     # Укажите ваш HTTPS URL для вебхука
-    WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # Укажите ваш HTTPS URL в переменной окружения WEBHOOK_URL
+    WEBHOOK_URL = "https://giftbot-xeca.vercel.app"
     bot.set_webhook(f"{WEBHOOK_URL}/{TOKEN}")
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
