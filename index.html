@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giftomania 🎁</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    Telegram.WebApp.expand();
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans text-gray-900">
+
+  <!-- Header -->
+  <div class="bg-purple-600 text-white px-4 py-4 rounded-b-lg">
+    <div class="flex items-center justify-between">
+      <h1 class="text-xl font-bold">Giftomania 🎁</h1>
+      <span class="text-sm">Баланс: <strong id="balance">8.5 ⭐</strong></span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex justify-around mt-4 text-sm text-purple-700 font-semibold">
+    <button class="border-b-2 border-purple-600 pb-1">Магазин</button>
+    <button class="pb-1">Мои подарки</button>
+  </div>
+
+  <!-- Gift Cards -->
+  <div class="p-4 grid grid-cols-2 gap-4">
+    <div class="bg-white rounded-xl p-4 text-center shadow">
+      <img src="https://img.icons8.com/emoji/48/gift-emoji.png" class="mx-auto mb-2 w-10 h-10" />
+      <h3 class="font-medium">Подарок со звёздами</h3>
+      <p class="text-sm text-gray-500">15 ⭐</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 text-center shadow">
+      <img src="https://img.icons8.com/color/48/gift.png" class="mx-auto mb-2 w-10 h-10" />
+      <h3 class="font-medium">Бронзовый подарок</h3>
+      <p class="text-sm text-gray-500">25 ⭐</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 text-center shadow">
+      <img src="https://img.icons8.com/office/48/gift.png" class="mx-auto mb-2 w-10 h-10" />
+      <h3 class="font-medium">Серебряный подарок</h3>
+      <p class="text-sm text-gray-500">50 ⭐</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 text-center shadow">
+      <img src="https://img.icons8.com/fluency/48/gift.png" class="mx-auto mb-2 w-10 h-10" />
+      <h3 class="font-medium">Золотой подарок</h3>
+      <p class="text-sm text-gray-500">100 ⭐</p>
+    </div>
+    <div class="bg-white rounded-xl p-4 text-center shadow col-span-2">
+      <img src="https://img.icons8.com/external-flat-juicy-fish/48/external-gift-valentines-flat-flat-juicy-fish.png" class="mx-auto mb-2 w-10 h-10" />
+      <h3 class="font-medium">Супер-подарок</h3>
+      <p class="text-sm text-gray-500">150 ⭐</p>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around py-2 text-sm">
+    <button class="text-purple-700 font-semibold">🎁 Открывай</button>
+    <button class="text-gray-600">🎟 Выиграй NFT</button>
+    <button class="text-gray-600">👥 Приглашай</button>
+  </div>
+
+</body>
+</html>
