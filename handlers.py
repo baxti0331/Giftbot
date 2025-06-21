@@ -4,5 +4,5 @@ from aiogram.types import Message
 router = Router()
 
 @router.message()
-async def echo_handler(message: Message):
-    await message.answer(f"Вы сказали: <b>{message.text}</b>")
+async def handle_all(message: Message):
+    await message.answer(f"📝 Вы написали: {message.text}")
