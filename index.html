@@ -16,6 +16,7 @@
     .active-tab {
       border-bottom-width: 2px;
       border-color: #8b5cf6;
+      color: #8b5cf6;
     }
   </style>
 </head>
@@ -29,13 +30,115 @@
     const theme = tg.colorScheme || 'light';
     document.documentElement.classList.toggle('dark', theme === 'dark');
 
-    // Пример обновления баланса (можно заменить на реальный backend)
-    const balanceElem = document.getElementById("balance");
     let balance = 100;
+    let myGifts = [];
+
     function updateBalanceDisplay() {
-      balanceElem.innerHTML = `${balance} ⭐`;
+      document.getElementById("balance").textContent = `${balance} ⭐`;
     }
-    window.onload = updateBalanceDisplay;
+
+    window.onload = () => {
+      updateBalanceDisplay();
+      showTab('shop');
+    };
+
+    // Открыть подарок, списать баланс и добавить в мои подарки
+    function openGift(name, price) {
+      if (balance < price) {
+        showModal("Недостаточно звёзд", `У тебя всего ${balance} ⭐`);
+        return;
+      }
+
+      balance -= price;
+      updateBalanceDisplay();
+
+      // Добавляем подарок в мои подарки
+      myGifts.push({ name, price });
+
+      const prizes = ["10 ⭐", "50 ⭐", "ничего", "NFT", "Telegram Premium", "15 ⭐"];
+      const result = prizes[Math.floor(Math.random() * prizes.length)];
+
+      showModal(name, `Тебе выпало: ${result}`);
+      // Обновляем вкладку "Мои подарки", если сейчас она открыта
+      if (currentTab === 'mygifts') {
+        renderMyGifts();
+      }
+    }
+
+    // Модалка
+    function showModal(title, text) {
+      document.getElementById("modal-title").textContent = title;
+      document.getElementById("modal-text").textContent = text;
+      document.getElementById("modal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.add("hidden");
+    }
+
+    // Управление вкладками
+    let currentTab = 'shop'; // 'shop' или 'mygifts'
+
+    function showTab(tab) {
+      currentTab = tab;
+
+      // Кнопки табов
+      const btnShop = document.getElementById('tab-shop-btn');
+      const btnMyGifts = document.getElementById('tab-mygifts-btn');
+
+      // Контейнеры вкладок
+      const shopContent = document.getElementById('tab-shop-content');
+      const myGiftsContent = document.getElementById('tab-mygifts-content');
+
+      if (tab === 'shop') {
+        btnShop.classList.add('active-tab');
+        btnShop.classList.remove('text-gray-500', 'dark:text-gray-400');
+        btnMyGifts.classList.remove('active-tab');
+        btnMyGifts.classList.add('text-gray-500', 'dark:text-gray-400');
+
+        shopContent.classList.remove('hidden');
+        myGiftsContent.classList.add('hidden');
+      } else if (tab === 'mygifts') {
+        btnMyGifts.classList.add('active-tab');
+        btnMyGifts.classList.remove('text-gray-500', 'dark:text-gray-400');
+        btnShop.classList.remove('active-tab');
+        btnShop.classList.add('text-gray-500', 'dark:text-gray-400');
+
+        shopContent.classList.add('hidden');
+        myGiftsContent.classList.remove('hidden');
+
+        renderMyGifts();
+      }
+    }
+
+    // Отрисовка списка моих подарков
+    function renderMyGifts() {
+      const container = document.getElementById('my-gifts-list');
+      container.innerHTML = '';
+
+      if (myGifts.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Пока нет купленных подарков.</p>';
+        return;
+      }
+
+      myGifts.forEach(gift => {
+        const div = document.createElement('div');
+        div.className = "bg-white dark:bg-gray-800 rounded-xl p-4 mb-3 shadow";
+        div.textContent = `${gift.name} — ${gift.price} ⭐`;
+        container.appendChild(div);
+      });
+    }
+
+    // Обработчики нижней навигации
+    function bottomNavAction(action) {
+      if (action === 'open') {
+        showModal('Открывай 🎁', 'Выбери подарок в магазине и открой его!');
+      } else if (action === 'nft') {
+        showModal('Выиграй NFT 🎟', 'Функция в разработке.');
+      } else if (action === 'invite') {
+        showModal('Приглашай 👥', 'Функция в разработке.');
+      }
+    }
   </script>
 
   <!-- Header -->
@@ -47,13 +150,13 @@
   </div>
 
   <!-- Tabs -->
-  <div class="flex justify-around mt-4 text-sm text-purple-700 font-semibold">
-    <button class="active-tab pb-1">Магазин</button>
-    <button class="pb-1 text-gray-500 dark:text-gray-400">Мои подарки</button>
+  <div class="flex justify-around mt-4 text-sm font-semibold">
+    <button id="tab-shop-btn" onclick="showTab('shop')" class="active-tab pb-1 text-purple-700">Магазин</button>
+    <button id="tab-mygifts-btn" onclick="showTab('mygifts')" class="pb-1 text-gray-500 dark:text-gray-400">Мои подарки</button>
   </div>
 
-  <!-- Gift Cards -->
-  <div class="p-4 grid grid-cols-2 gap-4">
+  <!-- Контент вкладок -->
+  <div class="p-4 grid grid-cols-2 gap-4" id="tab-shop-content">
     <!-- Подарки -->
     <div onclick="openGift('Подарок со звёздами', 15)" class="gift-card bg-white dark:bg-gray-800 rounded-xl p-4 text-center shadow cursor-pointer transition">
       <img src="https://img.icons8.com/emoji/48/gift-emoji.png" class="mx-auto mb-2 w-10 h-10" />
@@ -82,11 +185,16 @@
     </div>
   </div>
 
+  <div id="tab-mygifts-content" class="p-4 hidden">
+    <h2 class="text-lg font-semibold mb-3">Мои подарки</h2>
+    <div id="my-gifts-list"></div>
+  </div>
+
   <!-- Bottom Navigation -->
   <div class="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700 flex justify-around py-3 text-sm z-50">
-    <button class="text-purple-700 font-semibold">🎁 Открывай</button>
-    <button class="text-gray-500 dark:text-gray-300">🎟 Выиграй NFT</button>
-    <button class="text-gray-500 dark:text-gray-300">👥 Приглашай</button>
+    <button onclick="bottomNavAction('open')" class="text-purple-700 font-semibold">🎁 Открывай</button>
+    <button onclick="bottomNavAction('nft')" class="text-gray-500 dark:text-gray-300">🎟 Выиграй NFT</button>
+    <button onclick="bottomNavAction('invite')" class="text-gray-500 dark:text-gray-300">👥 Приглашай</button>
   </div>
 
   <!-- Модалка -->
@@ -97,33 +205,6 @@
       <button onclick="closeModal()" class="bg-purple-600 text-white px-4 py-2 rounded shadow">Закрыть</button>
     </div>
   </div>
-
-  <script>
-    function openGift(name, price) {
-      if (balance < price) {
-        showModal("Недостаточно звёзд", `У тебя всего ${balance} ⭐`);
-        return;
-      }
-
-      balance -= price;
-      updateBalanceDisplay();
-
-      const prizes = ["10 ⭐", "50 ⭐", "ничего", "NFT", "Telegram Premium", "15 ⭐"];
-      const result = prizes[Math.floor(Math.random() * prizes.length)];
-
-      showModal(name, `Тебе выпало: ${result}`);
-    }
-
-    function showModal(title, text) {
-      document.getElementById("modal-title").textContent = title;
-      document.getElementById("modal-text").textContent = text;
-      document.getElementById("modal").classList.remove("hidden");
-    }
-
-    function closeModal() {
-      document.getElementById("modal").classList.add("hidden");
-    }
-  </script>
 
 </body>
 </html>
