@@ -1,12 +1,5 @@
-from pydantic import BaseSettings
+import os
 
-
-class Settings(BaseSettings):
-    bot_token: str
-    webhook_url: str
-
-    class Config:
-        env_file = ".env"
-
-
-settings = Settings()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+WEBHOOK_PATH = "/api/webhook"
+WEBHOOK_URL = os.getenv("WEBHOOK_URL")  # пример: https://your-vercel-app.vercel.app/api/webhook
