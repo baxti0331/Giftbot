@@ -1,32 +1,39 @@
 from fastapi import FastAPI, Request
-from aiogram.types import Update
+from aiogram import Bot, Dispatcher, types
+import asyncio
+import os
 
-from bot import bot, dp
-from config import settings
-from handlers import router as main_router
+# 🔐 Настройки — замени на свои
+BOT_TOKEN = "your_bot_token_here"
+WEBHOOK_PATH = "/webhook"
+WEBHOOK_URL = f"https://yourdomain.com{WEBHOOK_PATH}"  # <--- замени!
 
+# 🎛️ Инициализация
+bot = Bot(token=BOT_TOKEN, parse_mode="HTML")
+dp = Dispatcher()
 app = FastAPI()
 
-# Регистрация хендлеров
-dp.include_router(main_router)
+# 📩 Обработка сообщений
+@dp.message()
+async def handle_message(message: types.Message):
+    await message.answer(f"👋 Привет! Ты сказал: {message.text}")
 
-
+# 🚀 При запуске приложения
 @app.on_event("startup")
-async def startup():
-    await bot.set_webhook(settings.webhook_url)
-    print("✅ Webhook установлен:", settings.webhook_url)
-
+async def on_startup():
+    await bot.set_webhook(WEBHOOK_URL)
+    print(f"✅ Webhook установлен на {WEBHOOK_URL}")
 
 @app.on_event("shutdown")
-async def shutdown():
+async def on_shutdown():
     await bot.delete_webhook()
     await bot.session.close()
-    print("🛑 Webhook удалён и бот выключен")
+    print("🛑 Webhook удалён и бот остановлен")
 
-
-@app.post("/telegram/webhook")
+# 📬 Обработка обновлений от Telegram
+@app.post(WEBHOOK_PATH)
 async def telegram_webhook(request: Request):
     data = await request.json()
-    update = Update(**data)
+    update = types.Update(**data)
     await dp.feed_update(bot, update)
     return {"ok": True}
